@@ -2,6 +2,6 @@
 members = [
     "macro",
     "core",
-    "ormlite",
+    "ormlitex",
     "cli"
 ]

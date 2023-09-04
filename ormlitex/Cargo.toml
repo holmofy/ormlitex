@@ -1,13 +1,13 @@
 [package]
-name = "ormlite"
+name = "ormlitex"
 version = "0.17.1"
 edition = "2021"
-authors = ["Kurt Wolf <kurtwolfbuilds@gmail.com>"]
+authors = ["Kurt Wolf <kurtwolfbuilds@gmail.com>", "holmofy <hff1996723@163.com>"]
 description = "An ORM for people who love SQL"
 license = "MIT"
-repository = "https://github.com/kurtbuilds/ormlite"
-homepage = "https://github.com/kurtbuilds/ormlite"
-documentation = "https://docs.rs/ormlite"
+repository = "https://github.com/holmofy/ormlitex"
+homepage = "https://github.com/holmofy/ormlitex"
+documentation = "https://docs.rs/ormlitex"
 autotests = false
 readme = "../README.md"
 autoexamples = false
@@ -27,10 +27,10 @@ path = "tests/postgres.rs"
 required-features = ["postgres"]
 
 [features]
-mysql = ["sqlx/mysql", "ormlite-macro/mysql"]
-sqlite = ["sqlx/sqlite", "ormlite-macro/sqlite", "ormlite-core/sqlite"]
-postgres = ["sqlx/postgres", "ormlite-macro/postgres", "ormlite-core/postgres"]
-runtime-tokio-rustls = ["ormlite-macro/runtime-tokio-rustls", "sqlx/runtime-tokio-rustls", "ormlite-core/runtime-tokio-rustls"]
+mysql = ["sqlx/mysql", "ormlitex-macro/mysql"]
+sqlite = ["sqlx/sqlite", "ormlitex-macro/sqlite", "ormlitex-core/sqlite"]
+postgres = ["sqlx/postgres", "ormlitex-macro/postgres", "ormlitex-core/postgres"]
+runtime-tokio-rustls = ["ormlitex-macro/runtime-tokio-rustls", "sqlx/runtime-tokio-rustls", "ormlitex-core/runtime-tokio-rustls"]
 uuid = ["sqlx/uuid"]
 decimal = ["sqlx/rust_decimal"]
 chrono = ["sqlx/chrono"]
@@ -42,15 +42,15 @@ default = ["runtime-tokio-rustls"]
 # set which database the macros will use by default.
 # Use the `#[orm(database = "postgres")]` attribute to override the default.
 # Use the attribute multiple times to generate code for multiple databases.
-default-postgres = ["postgres", "ormlite-macro/default-postgres"]
-default-sqlite = ["sqlite", "ormlite-macro/default-sqlite"]
-default-mysql = ["mysql", "ormlite-macro/default-mysql"]
+default-postgres = ["postgres", "ormlitex-macro/default-postgres"]
+default-sqlite = ["sqlite", "ormlitex-macro/default-sqlite"]
+default-mysql = ["mysql", "ormlitex-macro/default-mysql"]
 
 [dependencies]
 sqlx = { version = "0.7" }
 tokio = { version = "1.24.1", features = ["full"] }
-ormlite-macro = { path = "../macro" , version = "0.17.1"}
-ormlite-core = { path = "../core" , version = "0.17.1"}
+ormlitex-macro = { path = "../macro" , version = "0.17.1"}
+ormlitex-core = { path = "../core" , version = "0.17.1"}
 sqlx-core = "0.7"
 sqlmo = "0.16"
 tokio-stream = "0.1.14"

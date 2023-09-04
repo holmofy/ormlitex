@@ -1,7 +1,7 @@
 use proc_macro2::TokenStream;
 use quote::quote;
 use syn::DeriveInput;
-use ormlite_attr::{Ident, ModelMetadata, TableMetadata};
+use ormlitex_attr::{Ident, ModelMetadata, TableMetadata};
 
 pub fn struct_InsertModel(ast: &DeriveInput, attr: &ModelMetadata) -> TokenStream {
     let Some(insert_model) = &attr.insert_struct else {

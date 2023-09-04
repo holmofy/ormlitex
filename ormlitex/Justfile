@@ -75,7 +75,7 @@ expand-run:
     printf '#![feature(core_panic)]\n' >> examples/expand.rs
     cargo expand --example many-to-one --features sqlite,uuid >> examples/expand.rs
     sd '::alloc::' '::std::' examples/expand.rs -f
-    sd '# ?\[ormlite.*' '' examples/expand.rs -f
+    sd '# ?\[ormlitex.*' '' examples/expand.rs -f
     sd -s '#[rustc_box]' '' examples/expand.rs -f
     @just rerun
 alias er := expand-run

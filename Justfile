@@ -4,7 +4,7 @@ test:
     just attr/test
     just core/test
     just macro/test
-    just ormlite/test
+    just ormlitex/test
     just cli/build
 
 # Bump version. level=major,minor,patch
@@ -13,16 +13,16 @@ version level:
    git diff-index --exit-code HEAD > /dev/null || ! echo You have untracked changes. Commit your changes before bumping the version. || exit 1
 
    echo $(dye -c INFO) Make sure that it builds first.
-   (cd ormlite && cargo build --features runtime-tokio-rustls,sqlite)
+   (cd ormlitex && cargo build --features runtime-tokio-rustls,sqlite)
 
    cargo set-version --bump {{ level }} --workspace
-   VERSION=$(toml get ormlite/Cargo.toml package.version)
+   VERSION=$(toml get ormlitex/Cargo.toml package.version)
 
-   toml set macro/Cargo.toml dependencies.ormlite-core.version $VERSION
+   toml set macro/Cargo.toml dependencies.ormlitex-core.version $VERSION
    (cd macro && cargo update)
-   toml set ormlite/Cargo.toml dependencies.ormlite-core.version $VERSION
-   toml set ormlite/Cargo.toml dependencies.ormlite-macro.version $VERSION
-   (cd ormlite && cargo update)
+   toml set ormlitex/Cargo.toml dependencies.ormlitex-core.version $VERSION
+   toml set ormlitex/Cargo.toml dependencies.ormlitex-macro.version $VERSION
+   (cd ormlitex && cargo update)
 
    git commit -am "Bump version {{level}} to $VERSION"
    git tag v$VERSION
@@ -36,11 +36,11 @@ publish:
    cd attr && cargo publish
    cd core && cargo publish --features sqlite,postgres,mysql,runtime-tokio-rustls
    cd macro && cargo publish --features sqlite,postgres,mysql,runtime-tokio-rustls
-   cd ormlite && cargo publish --features sqlite,postgres,mysql
+   cd ormlitex && cargo publish --features sqlite,postgres,mysql
    cd cli && cargo publish
 
 doc:
-   cd ormlite && RUSTDOCFLAGS="--cfg docsrs" cargo +nightly doc --all-features --open -p ormlite --no-deps
+   cd ormlitex && RUSTDOCFLAGS="--cfg docsrs" cargo +nightly doc --all-features --open -p ormlitex --no-deps
 
 install:
     @just cli/install

@@ -1,20 +1,20 @@
-use crate::codegen::common::OrmliteCodegen;
-use ormlite_attr::TableMetadata;
-use ormlite_core::query_builder::Placeholder;
+use crate::codegen::common::ormlitexCodegen;
+use ormlitex_attr::TableMetadata;
+use ormlitex_core::query_builder::Placeholder;
 use proc_macro2::TokenStream;
 use quote::quote;
 use syn::DeriveInput;
 
 pub struct PostgresBackend {}
 
-impl OrmliteCodegen for PostgresBackend {
+impl ormlitexCodegen for PostgresBackend {
     fn database_ts(&self) -> TokenStream {
-        quote! { ::ormlite::postgres::Postgres }
+        quote! { ::ormlitex::postgres::Postgres }
     }
 
     fn placeholder_ts(&self) -> TokenStream {
         quote! {
-            ::ormlite::query_builder::Placeholder::dollar_sign()
+            ::ormlitex::query_builder::Placeholder::dollar_sign()
         }
     }
 

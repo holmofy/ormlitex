@@ -4,12 +4,12 @@
 use anyhow::Result;
 use clap::Parser;
 use colored::Colorize;
-use ormlite::Acquire;
+use ormlitex::Acquire;
 
 
-use ormlite::Executor;
+use ormlitex::Executor;
 
-use ormlite_core::config::{get_var_database_url};
+use ormlitex_core::config::{get_var_database_url};
 use crate::util::{create_connection, create_runtime};
 
 const INIT_QUERY: &str = r#"

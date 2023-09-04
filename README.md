@@ -1,30 +1,30 @@
 <div id="top"></div>
 
 <p align="center">
-<a href="https://github.com/kurtbuilds/ormlite/graphs/contributors">
-    <img src="https://img.shields.io/github/contributors/kurtbuilds/ormlite.svg?style=flat-square" alt="GitHub Contributors" />
+<a href="https://github.com/holmofy/ormlitex/graphs/contributors">
+    <img src="https://img.shields.io/github/contributors/holmofy/ormlitex.svg?style=flat-square" alt="GitHub Contributors" />
 </a>
-<a href="https://github.com/kurtbuilds/ormlite/stargazers">
-    <img src="https://img.shields.io/github/stars/kurtbuilds/ormlite.svg?style=flat-square" alt="Stars" />
+<a href="https://github.com/holmofy/ormlitex/stargazers">
+    <img src="https://img.shields.io/github/stars/holmofy/ormlitex.svg?style=flat-square" alt="Stars" />
 </a>
-<a href="https://github.com/kurtbuilds/ormlite/actions">
-    <img src="https://img.shields.io/github/actions/workflow/status/kurtbuilds/ormlite/test.yaml?style=flat-square" alt="Build Status" />
+<a href="https://github.com/holmofy/ormlitex/actions">
+    <img src="https://img.shields.io/github/actions/workflow/status/holmofy/ormlitex/test.yaml?style=flat-square" alt="Build Status" />
 </a>
-<a href="https://crates.io/crates/ormlite">
-    <img src="https://img.shields.io/crates/d/ormlite?style=flat-square" alt="Downloads" />
+<a href="https://crates.io/crates/ormlitex">
+    <img src="https://img.shields.io/crates/d/ormlitex?style=flat-square" alt="Downloads" />
 </a>
-<a href="https://crates.io/crates/ormlite">
-    <img src="https://img.shields.io/crates/v/ormlite?style=flat-square" alt="Crates.io" />
+<a href="https://crates.io/crates/ormlitex">
+    <img src="https://img.shields.io/crates/v/ormlitex?style=flat-square" alt="Crates.io" />
 </a>
 
 </p>
 
-# `ormlite`
+# `ormlitex`
 
-**`ormlite` is an ORM in Rust for developers that love SQL.** Let's see it in action:
+**`ormlitex` is an ORM in Rust for developers that love SQL.** Let's see it in action:
 
 ```rust
-use ormlite::model::*;
+use ormlitex::model::*;
 
 #[derive(Model, Debug)]
 pub struct Person {
@@ -36,7 +36,7 @@ pub struct Person {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// Start by making a database connection.
-     let mut conn = ormlite::SqliteConnection::connect(":memory:").await.unwrap();
+     let mut conn = ormlitex::SqliteConnection::connect(":memory:").await.unwrap();
 
     /// You can insert the model directly.
     let mut john = Person {
@@ -58,7 +58,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 ```
 
-You might like `ormlite` because:
+You might like `ormlitex` because:
 
 - It auto-generates migrations from Rust structs. To my knowledge, it is the only Rust ORM with this capability.
 - The join API (in alpha) has far fewer moving pieces than any other Rust ORM. It only relies on the table `struct`s themselves, and does not rely on relation traits (SeaORM) or modules (Diesel).
@@ -73,9 +73,9 @@ First, update your `Cargo.toml`:
 ```toml
 [dependencies]
 # For postgres
-ormlite = { version = "..", features = ["postgres"] }
+ormlitex = { version = "..", features = ["postgres"] }
 # For sqlite
-ormlite = { version = "..", features = ["sqlite"] }
+ormlitex = { version = "..", features = ["sqlite"] }
 ```
 
 Other databases and runtimes are supported, but are less tested. Please submit an issue if you encounter any.
@@ -94,11 +94,11 @@ export DATABASE_URL=postgres://postgres:postgres@localhost:5432/postgres
 
 If you are querying a static database and don't need migrations, skip this section. If you want migrations, keep reading.
 
-First, install `ormlite-cli`. Currently, the CLI only supports Postgres. While `ormlite-cli` is separate from [`sqlx-cli`](https://github.com/launchbadge/sqlx/blob/master/sqlx-cli/README.md#usage), they are 100% compatible with each other.
+First, install `ormlitex-cli`. Currently, the CLI only supports Postgres. While `ormlitex-cli` is separate from [`sqlx-cli`](https://github.com/launchbadge/sqlx/blob/master/sqlx-cli/README.md#usage), they are 100% compatible with each other.
 `sqlx-cli` does not support auto-generating migrations or snapshots (to rollback in development without writing down migrations), but it is less bleeding edge and supports more database types.
 
 ```bash
-cargo install ormlite-cli
+cargo install ormlitex-cli
 ```
 
 Next, create the database and the migrations table. `init` creates a `_sqlx_migrations` table that tracks your migrations.
@@ -106,7 +106,7 @@ Next, create the database and the migrations table. `init` creates a `_sqlx_migr
 ```bash
 # Create the database if it doesn't exist. For postgres, that's:
 # createdb <dbname>
-ormlite init
+ormlitex init
 ```
 
 Let's see migrations in action. Create a Rust struct with `#[derive(Model)]`, which the CLI tool detects to auto-generate migrations:
@@ -114,7 +114,7 @@ Let's see migrations in action. Create a Rust struct with `#[derive(Model)]`, wh
 ```
 # src/models.rs
 
-use ormlite::model::*;
+use ormlitex::model::*;
 
 #[derive(Model, Debug)]
 pub struct Person {
@@ -127,7 +127,7 @@ pub struct Person {
 Next, auto-generate the migration.
 
 ```bash
-ormlite migrate initial
+ormlitex migrate initial
 ```
 
 This creates a plain SQL file in `migrations/`. Let's review it before we execute it:
@@ -139,10 +139,10 @@ cat migrations/*.sql
 Once you're satisfied reviewing it, you can execute it:
 
 ```bash
-ormlite up
+ormlitex up
 ```
 
-By default, `up` also creates a snapshot, so you can rollback using `ormlite down` if need be. There's also an option to generate paired up/down migrations instead of only up migrations.
+By default, `up` also creates a snapshot, so you can rollback using `ormlitex down` if need be. There's also an option to generate paired up/down migrations instead of only up migrations.
 
 That's the end of setup. Let's now look at how to run queries.
 
@@ -151,7 +151,7 @@ That's the end of setup. Let's now look at how to run queries.
 The insert and update syntax at the top of the README is most effective for UUID primary key tables.
 
 ```rust
-use ormlite::model::*;
+use ormlitex::model::*;
 use uuid::Uuid;
 
 #[derive(Model, Debug)]
@@ -162,7 +162,7 @@ pub struct Event {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let mut conn = ormlite::SqliteConnection::connect(":memory:").await.unwrap();
+    let mut conn = ormlitex::SqliteConnection::connect(":memory:").await.unwrap();
 
     let mut event = Event {
         id: Uuid::new_v4(),
@@ -181,11 +181,11 @@ method must update all columns.
 To work around the autoincrement issue, you can use an insertion struct, shown here, or a builder, shown below.
 
 ```rust
-use ormlite::types::Json;
+use ormlitex::types::Json;
 use serde_json::Value;
 
 #[derive(Model, Debug)]
-#[ormlite(insertable = InsertPerson)]
+#[ormlitex(insertable = InsertPerson)]
 pub struct Person {
     pub id: i32,
     // Because the other fields are the primary key, and marked as default and default_value respectively,
@@ -193,11 +193,11 @@ pub struct Person {
     pub name: String,
     // This field will not be part of the InsertPerson struct,
     // and rows will take the database-level default upon insertion.
-    #[ormlite(default)]
+    #[ormlitex(default)]
     pub archived_at: Option<DateTime<Utc>>,
     // This field will not be part of the InsertPerson struct, 
     // which will always pass the provided value when inserting.
-    #[ormlite(default_value = "serde_json::json!({})")]
+    #[ormlitex(default_value = "serde_json::json!({})")]
     pub metadata: Json<Value>,
 }
 
@@ -214,7 +214,7 @@ specifying `table = "<table>"` to route the struct to the same database table.
 
 ```rust
 #[derive(Model, Debug)]
-#[ormlite(table = "person")]
+#[ormlitex(table = "person")]
 pub struct InsertPerson {
     pub name: String,
     pub age: i32,
@@ -254,7 +254,7 @@ async fn builder_syntax_example() {
 You can use `Model::select` to build a SQL query using Rust logic.
 
 > **Note**: Postgres's approach of using numbered dollar sign placeholders quickly breaks down when building queries. Instead, even with Postgres, use `?` for parameters,
-> and `ormlite` will replace the `?` placeholders with `$` placeholders when it constructs the final query.
+> and `ormlitex` will replace the `?` placeholders with `$` placeholders when it constructs the final query.
 
 ```rust
 #[derive(Model, Debug)]
@@ -278,7 +278,7 @@ async fn query_builder_example() {
 
 You can fall back to raw queries if the ORM methods don't work for you. You can include handwritten strings, or if
 you want a lower-level query builder, you can use [`sqlmo`](https://github.com/kurtbuilds/sqlmo),
-the underlying engine that powers `ormlite`'s query builder & migration auto-generation.
+the underlying engine that powers `ormlitex`'s query builder & migration auto-generation.
 
 ```rust
 async fn model_query_example() {
@@ -291,7 +291,7 @@ async fn model_query_example() {
 
 async fn raw_query_example() {
     // You can also use the raw query API, which will return tuples to decode as you like
-    let _used_ids: Vec<i32> = ormlite::query_as("SELECT id FROM person")
+    let _used_ids: Vec<i32> = ormlitex::query_as("SELECT id FROM person")
         .fetch_all(pool)
         .await
         .unwrap()
@@ -303,25 +303,25 @@ async fn raw_query_example() {
 
 # Table Customization
 
-Attributes are defined in [these structs](https://github.com/kurtbuilds/ormlite/blob/master/attr/src/attr.rs).
+Attributes are defined in [these structs](https://github.com/holmofy/ormlitex/blob/master/attr/src/attr.rs).
 
 This example shows them in action:
 
 ```rust
 #[derive(Model, Debug)]
-#[ormlite(table = "people", insertable = InsertPerson)]
+#[ormlitex(table = "people", insertable = InsertPerson)]
 pub struct Person {
-    #[ormlite(primary_key)]
+    #[ormlitex(primary_key)]
     pub id: i32,
     pub name: String,
-    #[ormlite(column = "name_of_column_in_db")]
+    #[ormlitex(column = "name_of_column_in_db")]
     pub age: i32,
 }
 ```
 
 ## Joins
 
-Join support is alpha stage. Right now, `ormlite` only support many-to-one relations (e.g. Person belongs to Organization). 
+Join support is alpha stage. Right now, `ormlitex` only support many-to-one relations (e.g. Person belongs to Organization). 
 Support for many-to-many and one-to-many is planned. If you use this functionality, please report any bugs you encounter.
 
 ```rust
@@ -333,7 +333,7 @@ pub struct Person {
     
     // Note that we don't declare a separate field `pub organization_id: Uuid`.
     // It is implicitly defined by the Join and the join_column attribute.
-    #[ormlite(join_column = "organization_id")]
+    #[ormlitex(join_column = "organization_id")]
     pub organization: Join<Organization>,
 }
 
@@ -358,7 +358,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         organization: Join::new(org),
     };
     
-    let mut conn = ormlite::SqliteConnection::connect(":memory:").await.unwrap();
+    let mut conn = ormlitex::SqliteConnection::connect(":memory:").await.unwrap();
     let user = user.insert(&mut conn).await?;
     assert_eq!(user.organization.loaded(), true);
     println!("{:?}", user);
@@ -392,10 +392,10 @@ time = { version = "...", features = ["serde"] }
 ```
 
 ```rust
-use ormlite::model::*;
+use ormlitex::model::*;
 use serde::{Serialize, Deserialize};
-use ormlite::types::Uuid;
-use ormlite::types::chrono::{DateTime, Utc};
+use ormlitex::types::Uuid;
+use ormlitex::types::chrono::{DateTime, Utc};
 
 #[derive(Model, Debug, Serialize, Deserialize)]
 pub struct Person {
@@ -407,12 +407,12 @@ pub struct Person {
 
 ## Json/Jsonb Columns
 
-You can use `ormlite::types::Json` for JSON or JSONB fields. For unstructured data, use `serde_json::Value` as the inner
+You can use `ormlitex::types::Json` for JSON or JSONB fields. For unstructured data, use `serde_json::Value` as the inner
 type. Use a struct with `Deserialize + Serialize` as the generic for structured data.
 
 ```rust
-use ormlite::model::*;
-use ormlite::types::Json;
+use ormlitex::model::*;
+use ormlitex::types::Json;
 use serde_json::Value;
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -460,5 +460,5 @@ You can log queries using sqlx's logger: `RUST_LOG=sqlx=info`
 
 # Contributing
 
-Open source thrives on contributions, and `ormlite` is a community project. We welcome you to file bugs, feature
+Open source thrives on contributions, and `ormlitex` is a community project. We welcome you to file bugs, feature
 requests, requests for better docs, pull requests, and more!

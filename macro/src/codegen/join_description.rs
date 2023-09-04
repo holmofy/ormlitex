@@ -2,7 +2,7 @@
 use proc_macro2::TokenStream;
 use quote::quote;
 use syn::DeriveInput;
-use ormlite_attr::{Ident, TableMetadata};
+use ormlitex_attr::{Ident, TableMetadata};
 use crate::MetadataCache;
 
 pub fn static_join_descriptions(attr: &TableMetadata, metadata_cache: &MetadataCache) -> TokenStream {
@@ -16,11 +16,11 @@ pub fn static_join_descriptions(attr: &TableMetadata, metadata_cache: &MetadataC
         let column_name = c.many_to_one_column_name.as_ref().unwrap();
         let foreign_key = &joined_table.pkey.column_name;
         let join_type = if c.one_to_many_foreign_key.is_some() {
-            quote! { ::ormlite::__private::SemanticJoinType::OneToMany }
+            quote! { ::ormlitex::__private::SemanticJoinType::OneToMany }
         } else if c.many_to_one_column_name.is_some() {
-            quote! { ::ormlite::__private::SemanticJoinType::ManyToOne }
+            quote! { ::ormlitex::__private::SemanticJoinType::ManyToOne }
         } else if c.many_to_many_table.is_some() {
-            quote! { ::ormlite::__private::SemanticJoinType::ManyToMany }
+            quote! { ::ormlitex::__private::SemanticJoinType::ManyToMany }
         } else {
             panic!("Unknown join type");
         };
@@ -29,8 +29,8 @@ pub fn static_join_descriptions(attr: &TableMetadata, metadata_cache: &MetadataC
             c.identifier.to_string()
         });
         quote! {
-            pub fn #id() -> ::ormlite::__private::JoinDescription {
-                ::ormlite::__private::JoinDescription {
+            pub fn #id() -> ::ormlitex::__private::JoinDescription {
+                ::ormlitex::__private::JoinDescription {
                     joined_columns: &[
                         #(
                             #columns,

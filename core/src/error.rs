@@ -9,5 +9,5 @@ pub enum Error {
     TokenizationError(#[from] sqlparser::tokenizer::TokenizerError),
 
     #[error("{0}")]
-    OrmliteError(String),
+    ormlitexError(String),
 }

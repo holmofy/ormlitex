@@ -1,8 +1,8 @@
-use ormlite::model::*;
-use ormlite::Connection;
+use ormlitex::model::*;
+use ormlitex::Connection;
 
 #[derive(Model, Debug)]
-#[ormlite(insertable = InsertPerson)]
+#[ormlitex(insertable = InsertPerson)]
 // #[index(col, col2, col3, unique = true, name = "my_index", type="btree")]
 pub struct Person {
     pub id: u32,
@@ -15,10 +15,10 @@ pub static CREATE_TABLE_SQL: &str =
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let mut conn = ormlite::sqlite::SqliteConnection::connect(":memory:").await.unwrap();
+    let mut conn = ormlitex::sqlite::SqliteConnection::connect(":memory:").await.unwrap();
     env_logger::init();
 
-    ormlite::query(CREATE_TABLE_SQL)
+    ormlitex::query(CREATE_TABLE_SQL)
         .execute(&mut conn)
         .await?;
 

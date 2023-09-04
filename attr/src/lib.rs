@@ -26,7 +26,7 @@ pub struct LoadOptions {
 
 /// This is an intermediate representation of the schema.
 ///
-pub struct OrmliteSchema {
+pub struct ormlitexSchema {
     pub tables: Vec<ModelMetadata>,
     // map of rust structs (e.g. enums) to database encodings.
     // note that these are not bona fide postgres types.
@@ -85,7 +85,7 @@ impl Intermediate {
     }
 }
 
-pub fn schema_from_filepaths(paths: &[&Path]) -> anyhow::Result<OrmliteSchema> {
+pub fn schema_from_filepaths(paths: &[&Path]) -> anyhow::Result<ormlitexSchema> {
     let walk = paths.iter().flat_map(Walk::new);
 
     let walk = walk.filter_map(|e| e.ok())
@@ -123,7 +123,7 @@ pub fn schema_from_filepaths(paths: &[&Path]) -> anyhow::Result<OrmliteSchema> {
             type_aliases.insert(name, ty);
         }
     }
-    Ok(OrmliteSchema {
+    Ok(ormlitexSchema {
         tables,
         type_reprs: type_aliases,
     })

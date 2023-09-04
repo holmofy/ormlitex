@@ -7,7 +7,7 @@ use syn::{Ident, LitStr, Path};
 pub struct ModelAttributes {
     /// The name of the table in the database. Defaults to the struct name.
     /// Example:
-    /// #[ormlite(table_name = "users")]
+    /// #[ormlitex(table_name = "users")]
     /// pub struct User {
     ///    pub id: i32,
     /// }
@@ -15,7 +15,7 @@ pub struct ModelAttributes {
 
     /// The struct name of an insertion struct.
     /// Example:
-    /// #[ormlite(insertable = InsertUser)]
+    /// #[ormlitex(insertable = InsertUser)]
     /// pub struct User {
     ///   pub id: i32,
     /// }
@@ -29,8 +29,8 @@ pub struct ModelAttributes {
     /// Currently, because methods conflict, you
     /// You can use this attribute multiple times to set multiple databases.
     /// Example:
-    /// #[ormlite(database = "postgres")]
-    /// #[ormlite(database = "sqlite")]
+    /// #[ormlitex(database = "postgres")]
+    /// #[ormlitex(database = "sqlite")]
     /// pub struct User {
     ///  pub id: i32,
     /// }
@@ -52,7 +52,7 @@ pub struct ColumnAttributes {
     /// Note this column is not expected to exist on the model, but needs to exist in the database.
     /// Example:
     /// pub struct User {
-    ///     #[ormlite(join_column = "organization_id")]
+    ///     #[ormlitex(join_column = "organization_id")]
     ///     pub organization: Join<Organization>,
     /// }
     pub join_column: Option<NameValue<LitStr>>,
@@ -60,7 +60,7 @@ pub struct ColumnAttributes {
     /// Example:
     /// pub struct User {
     ///     pub org_id: i32,
-    ///     #[ormlite(many_to_many_table_name = join_user_role)]
+    ///     #[ormlitex(many_to_many_table_name = join_user_role)]
     ///     pub roles: Join<Vec<Role>>,
     /// }
     pub many_to_many_table: Option<Ident>,
@@ -68,7 +68,7 @@ pub struct ColumnAttributes {
     /// Example:
     /// pub struct User {
     ///     pub id: i32,
-    ///     #[ormlite(one_to_many_foreign_key = Post::author_id)]
+    ///     #[ormlitex(one_to_many_foreign_key = Post::author_id)]
     ///     pub posts: Join<Vec<Post>>,
     /// }
     ///
@@ -102,18 +102,18 @@ mod test {
 
     #[test]
     fn test_default() {
-        let attr: Attribute = parse_quote!(#[ormlite(default_value = "serde_json::Value::Null")]);
+        let attr: Attribute = parse_quote!(#[ormlitex(default_value = "serde_json::Value::Null")]);
         let args: ColumnAttributes = attr.parse_args().unwrap();
         assert!(args.is_default());
 
-        let attr: Attribute = parse_quote!(#[ormlite(default)]);
+        let attr: Attribute = parse_quote!(#[ormlitex(default)]);
         let args: ColumnAttributes = attr.parse_args().unwrap();
         assert!(args.is_default());
     }
 
     #[test]
     fn test_join_column() {
-        let attr: Attribute = parse_quote!(#[ormlite(join_column = "org_id")]);
+        let attr: Attribute = parse_quote!(#[ormlitex(join_column = "org_id")]);
         let args: ColumnAttributes = attr.parse_args().unwrap();
         assert!(args.join_column.is_some());
     }

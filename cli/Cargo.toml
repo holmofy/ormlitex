@@ -1,14 +1,14 @@
 [package]
-name = "ormlite-cli"
+name = "ormlitex-cli"
 version = "0.17.1"
 edition = "2021"
-description = "An ORM for people who love SQL. Use the `ormlite` crate, not this one."
+description = "An ORM for people who love SQL. Use the `ormlitex` crate, not this one."
 authors = ["Kurt Wolf <kurtwolfbuilds@gmail.com>"]
 license = "MIT"
-repository = "https://github.com/kurtbuilds/ormlite"
+repository = "https://github.com/holmofy/ormlitex"
 
 [[bin]]
-name = "ormlite"
+name = "ormlitex"
 path = "src/main.rs"
 
 [features]
@@ -16,16 +16,16 @@ path = "src/main.rs"
 #sqlite = ["sqlx/sqlite"]
 #postgres = ["sqlx/postgres"]
 #runtime-tokio-rustls = ["sqlx/runtime-tokio-rustls"]
-default = ["ormlite/postgres", "ormlite/uuid", "ormlite/time", "ormlite/json", "ormlite/chrono", "ormlite/runtime-tokio-rustls"]
+default = ["ormlitex/postgres", "ormlitex/uuid", "ormlitex/time", "ormlitex/json", "ormlitex/chrono", "ormlitex/runtime-tokio-rustls"]
 experimental-sid = []
 
 [dependencies]
 anyhow = "1"
 time = { version = "0.3", features = ["formatting"] }
 clap = { version = "4", features = ["derive"] }
-ormlite = { version = "0.17", path = "../ormlite" }
-ormlite-core = { version = "0.17", path = "../core" }
-ormlite-attr = { version = "0.17", path = "../attr" }
+ormlitex = { version = "0.17", path = "../ormlitex" }
+ormlitex-core = { version = "0.17", path = "../core" }
+ormlitex-attr = { version = "0.17", path = "../attr" }
 tokio = { version = "1", features = ["full"] }
 sqlmo = { version = "0.16", features = ["tracing"] }
 sqlmo_sqlx = "0.16"

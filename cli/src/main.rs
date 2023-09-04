@@ -28,7 +28,7 @@ pub enum Command {
     Up(Up),
     /// Run down migration. If no target revision is specified, the last migration will be run.
     Down(Down),
-    /// Initiailize the database for use with `ormlite`. Creates the migrations table.
+    /// Initiailize the database for use with `ormlitex`. Creates the migrations table.
     Init(Init),
 }
 
@@ -41,8 +41,8 @@ fn main() -> Result<()> {
         )
         .with(tracing_subscriber::filter::Targets::new()
             .with_target(env!("CARGO_PKG_NAME"), level)
-            .with_target("ormlite", level)
-            .with_target("ormlite_attr", level)
+            .with_target("ormlitex", level)
+            .with_target("ormlitex_attr", level)
             .with_target("sqlmo", level)
         )
         .init();

@@ -4,16 +4,16 @@ use std::fmt::Formatter;
 use std::path::Path;
 use anyhow::Result;
 use sqlmo::{Schema, Table, schema::Column};
-use ormlite_attr::{ColumnMetadata, Ident, InnerType, ModelMetadata, TType};
-use ormlite_attr::{schema_from_filepaths};
+use ormlitex_attr::{ColumnMetadata, Ident, InnerType, ModelMetadata, TType};
+use ormlitex_attr::{schema_from_filepaths};
 
 #[derive(Debug)]
 pub struct Options {
     pub verbose: bool,
 }
 
-pub trait TryFromOrmlite: Sized {
-    fn try_from_ormlite_project(path: &[&Path]) -> Result<Self>;
+pub trait TryFromormlitex: Sized {
+    fn try_from_ormlitex_project(path: &[&Path]) -> Result<Self>;
 }
 
 trait SqlDiffTableExt {
@@ -163,8 +163,8 @@ impl SqlType {
     }
 }
 
-impl TryFromOrmlite for Schema {
-    fn try_from_ormlite_project(paths: &[&Path]) -> Result<Self> {
+impl TryFromormlitex for Schema {
+    fn try_from_ormlitex_project(paths: &[&Path]) -> Result<Self> {
         let mut schema = Self::default();
         let mut fs_schema = schema_from_filepaths(paths)?;
         let primary_key_type: BTreeMap<String, InnerType> = fs_schema.tables.iter().map(|t|  {
@@ -199,7 +199,7 @@ mod tests {
     use super::*;
     use syn::{parse_str};
     use assert_matches::assert_matches;
-    use ormlite_attr::TType;
+    use ormlitex_attr::TType;
     use sqlmo::Type;
 
     #[test]

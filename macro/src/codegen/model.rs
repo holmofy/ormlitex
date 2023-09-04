@@ -1,15 +1,15 @@
 use proc_macro2::TokenStream;
 use quote::quote;
 use syn::DeriveInput;
-use ormlite_attr::{Ident, ModelMetadata, TableMetadata};
-use crate::codegen::common::{insertion_binding, OrmliteCodegen};
+use ormlitex_attr::{Ident, ModelMetadata, TableMetadata};
+use crate::codegen::common::{insertion_binding, ormlitexCodegen};
 use crate::codegen::insert::impl_Model__insert;
 use crate::codegen::select::impl_Model__select;
 use crate::codegen::update::impl_Model__update_all_fields;
 use crate::MetadataCache;
 
 
-pub fn impl_Model(db: &dyn OrmliteCodegen, attr: &ModelMetadata, metadata_cache: &MetadataCache) -> TokenStream {
+pub fn impl_Model(db: &dyn ormlitexCodegen, attr: &ModelMetadata, metadata_cache: &MetadataCache) -> TokenStream {
     let model = &attr.inner.struct_name;
     let partial_model = attr.builder_struct();
 
@@ -21,21 +21,21 @@ pub fn impl_Model(db: &dyn OrmliteCodegen, attr: &ModelMetadata, metadata_cache:
 
     let db = db.database_ts();
     quote! {
-        impl ::ormlite::model::Model<#db> for #model {
+        impl ::ormlitex::model::Model<#db> for #model {
             #impl_Model__insert
             #impl_Model__update_all_fields
             #impl_Model__delete
             #impl_Model__fetch_one
             #impl_Model__select
 
-           fn query(query: &str) -> ::ormlite::query::QueryAs<#db, Self, <#db as ::ormlite::database::HasArguments>::Arguments> {
-                ::ormlite::query_as::<_, Self>(query)
+           fn query(query: &str) -> ::ormlitex::query::QueryAs<#db, Self, <#db as ::ormlitex::database::HasArguments>::Arguments> {
+                ::ormlitex::query_as::<_, Self>(query)
             }
         }
     }
 }
 
-pub fn impl_HasModelBuilder(db: &dyn OrmliteCodegen, attr: &ModelMetadata) -> TokenStream {
+pub fn impl_HasModelBuilder(db: &dyn ormlitexCodegen, attr: &ModelMetadata) -> TokenStream {
     let model = &attr.inner.struct_name;
     let partial_model = attr.builder_struct();
 
@@ -44,7 +44,7 @@ pub fn impl_HasModelBuilder(db: &dyn OrmliteCodegen, attr: &ModelMetadata) -> To
 
     let db = db.database_ts();
     quote! {
-        impl<'slf> ::ormlite::model::HasModelBuilder<'slf, #db> for #model {
+        impl<'slf> ::ormlitex::model::HasModelBuilder<'slf, #db> for #model {
             type ModelBuilder = #partial_model<'slf>;
 
             #impl_Model__builder
@@ -53,7 +53,7 @@ pub fn impl_HasModelBuilder(db: &dyn OrmliteCodegen, attr: &ModelMetadata) -> To
     }
 }
 
-pub fn impl_Model__delete(db: &dyn OrmliteCodegen, attr: &ModelMetadata) -> TokenStream {
+pub fn impl_Model__delete(db: &dyn ormlitexCodegen, attr: &ModelMetadata) -> TokenStream {
     let mut placeholder = db.placeholder();
 
     let query = format!(
@@ -67,18 +67,18 @@ pub fn impl_Model__delete(db: &dyn OrmliteCodegen, attr: &ModelMetadata) -> Toke
     let db = db.database_ts();
     let id = &attr.pkey.identifier;
     quote! {
-        fn delete<'e, E>(self, db: E) -> #box_future<'e, ::ormlite::Result<()>>
+        fn delete<'e, E>(self, db: E) -> #box_future<'e, ::ormlitex::Result<()>>
         where
-            E: 'e +::ormlite::Executor<'e, Database = #db>
+            E: 'e +::ormlitex::Executor<'e, Database = #db>
         {
             Box::pin(async move {
-                let row =::ormlite::query(#query)
+                let row =::ormlitex::query(#query)
                     .bind(self.#id)
                     .execute(db)
                     .await
-                    .map_err(::ormlite::Error::from)?;
+                    .map_err(::ormlitex::Error::from)?;
                 if row.rows_affected() == 0 {
-                    Err(::ormlite::Error::from(::ormlite::SqlxError::RowNotFound))
+                    Err(::ormlitex::Error::from(::ormlitex::SqlxError::RowNotFound))
                 } else {
                     Ok(())
                 }
@@ -88,7 +88,7 @@ pub fn impl_Model__delete(db: &dyn OrmliteCodegen, attr: &ModelMetadata) -> Toke
 }
 
 
-pub fn impl_Model__fetch_one(db: &dyn OrmliteCodegen, attr: &ModelMetadata) -> TokenStream {
+pub fn impl_Model__fetch_one(db: &dyn ormlitexCodegen, attr: &ModelMetadata) -> TokenStream {
     let mut placeholder = db.placeholder();
 
     let query = format!(
@@ -101,18 +101,18 @@ pub fn impl_Model__fetch_one(db: &dyn OrmliteCodegen, attr: &ModelMetadata) -> T
     let db = db.database_ts();
     let box_future = crate::util::box_fut_ts();
     quote! {
-        fn fetch_one<'e, 'a, Arg, E>(id: Arg, db: E) -> #box_future<'e, ::ormlite::Result<Self>>
+        fn fetch_one<'e, 'a, Arg, E>(id: Arg, db: E) -> #box_future<'e, ::ormlitex::Result<Self>>
         where
             'a: 'e,
-            Arg: 'a + Send + ::ormlite::Encode<'a, #db> + ::ormlite::types::Type<#db>,
-            E: 'e +::ormlite::Executor<'e, Database = #db>
+            Arg: 'a + Send + ::ormlitex::Encode<'a, #db> + ::ormlitex::types::Type<#db>,
+            E: 'e +::ormlitex::Executor<'e, Database = #db>
         {
             Box::pin(async move {
-                ::ormlite::query_as::<#db, Self>(#query)
+                ::ormlitex::query_as::<#db, Self>(#query)
                     .bind(id)
                     .fetch_one(db)
                     .await
-                    .map_err(::ormlite::Error::from)
+                    .map_err(::ormlitex::Error::from)
             })
         }
     }

@@ -1,10 +1,10 @@
 use proc_macro2::TokenStream;
 use quote::quote;
-use ormlite_attr::TableMetadata;
-use crate::codegen::common::OrmliteCodegen;
+use ormlitex_attr::TableMetadata;
+use crate::codegen::common::ormlitexCodegen;
 
 /// Allows the model to be turned into arguments. This can be used for bulk insertion.
-pub fn impl_IntoArguments(db: &dyn OrmliteCodegen, attr: &TableMetadata) -> TokenStream {
+pub fn impl_IntoArguments(db: &dyn ormlitexCodegen, attr: &TableMetadata) -> TokenStream {
     let mut placeholder = db.placeholder();
     let db = db.database_ts();
     let model = &attr.struct_name;
@@ -13,7 +13,7 @@ pub fn impl_IntoArguments(db: &dyn OrmliteCodegen, attr: &TableMetadata) -> Toke
             let field = &c.identifier;
             let value = if c.is_json() || c.experimental_encode_as_json {
                 quote! {
-                    ::ormlite::types::Json(self.#field)
+                    ::ormlitex::types::Json(self.#field)
                 }
             } else {
                 quote! {
@@ -21,14 +21,14 @@ pub fn impl_IntoArguments(db: &dyn OrmliteCodegen, attr: &TableMetadata) -> Toke
                 }
             };
             quote! {
-                ::ormlite::Arguments::add(&mut args, #value);
+                ::ormlitex::Arguments::add(&mut args, #value);
             }
         });
 
     quote! {
-        impl<'a> ::ormlite::IntoArguments<'a, #db> for #model {
-            fn into_arguments(self) -> <#db as ::ormlite::database::HasArguments<'a>>::Arguments {
-                let mut args = <#db as ::ormlite::database::HasArguments<'a>>::Arguments::default();
+        impl<'a> ::ormlitex::IntoArguments<'a, #db> for #model {
+            fn into_arguments(self) -> <#db as ::ormlitex::database::HasArguments<'a>>::Arguments {
+                let mut args = <#db as ::ormlitex::database::HasArguments<'a>>::Arguments::default();
                 #(
                     #params
                 )*

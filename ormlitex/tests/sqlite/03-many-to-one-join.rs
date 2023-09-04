@@ -1,5 +1,5 @@
-use ormlite::model::*;
-use ormlite::Connection;
+use ormlitex::model::*;
+use ormlitex::Connection;
 use uuid::Uuid;
 
 #[derive(Model, Debug)]
@@ -7,12 +7,12 @@ pub struct Person {
     id: Uuid,
     name: String,
     age: u8,
-    #[ormlite(join_column = "org_id")]
+    #[ormlitex(join_column = "org_id")]
     organization: Join<Organization>,
 }
 
 #[derive(Model, Clone, Debug)]
-#[ormlite(table = "orgs")]
+#[ormlitex(table = "orgs")]
 pub struct Organization {
     id: Uuid,
     name: String,
@@ -27,11 +27,11 @@ pub static CREATE_ORG_SQL: &str =
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     env_logger::init();
-    let mut db = ormlite::sqlite::SqliteConnection::connect(":memory:").await.unwrap();
-    ormlite::query(CREATE_PERSON_SQL)
+    let mut db = ormlitex::sqlite::SqliteConnection::connect(":memory:").await.unwrap();
+    ormlitex::query(CREATE_PERSON_SQL)
         .execute(&mut db)
         .await?;
-    ormlite::query(CREATE_ORG_SQL)
+    ormlitex::query(CREATE_ORG_SQL)
         .execute(&mut db)
         .await?;
 

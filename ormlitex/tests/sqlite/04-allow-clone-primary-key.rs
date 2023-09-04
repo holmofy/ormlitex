@@ -1,11 +1,11 @@
-use ormlite::model::*;
-use ormlite::Connection;
+use ormlitex::model::*;
+use ormlitex::Connection;
 use uuid::Uuid;
 
 #[derive(Model)]
 pub struct Person {
     id: Uuid,
-    #[ormlite(primary_key)]
+    #[ormlitex(primary_key)]
     name: String,
     age: u8,
 }
@@ -17,8 +17,8 @@ pub static CREATE_TABLE_SQL: &str =
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     env_logger::init();
-    let mut db = ormlite::sqlite::SqliteConnection::connect(":memory:").await.unwrap();
-    ormlite::query(CREATE_TABLE_SQL)
+    let mut db = ormlitex::sqlite::SqliteConnection::connect(":memory:").await.unwrap();
+    ormlitex::query(CREATE_TABLE_SQL)
         .execute(&mut db)
         .await?;
 

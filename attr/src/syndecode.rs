@@ -45,7 +45,7 @@ fn decode_traits_from_derive_tokens(derives: &mut Derives, tokens: &TokenStream)
                     continue;
                 } else if matches!(p.unwrap(), TokenTree::Punct(p) if p.as_char() == ':') {
                     let ns = i.to_string();
-                    if !(ns == "sqlx" || ns == "ormlite") {
+                    if !(ns == "sqlx" || ns == "ormlitex") {
                         iter.find(|tok| matches!(tok, TokenTree::Punct(p) if p.as_char() == ','));
                         continue;
                     }
@@ -109,14 +109,14 @@ mod tests {
     }
 
     /// The attributes on this are sort of nonsense, but we want to test the dynamic attribute parsing
-    /// in ormlite_attr::Attribute
+    /// in ormlitex_attr::Attribute
     #[test]
     fn test_attributes() {
         // the doc string is the regression test
         let code = r#"/// Json-serializable representation of query results
-#[derive(Debug, Serialize, Deserialize, Clone, sqlx::Type, ormlite::Model)]
+#[derive(Debug, Serialize, Deserialize, Clone, sqlx::Type, ormlitex::Model)]
 #[repr(u8)]
-#[ormlite(table = "result")]
+#[ormlitex(table = "result")]
 #[deprecated]
 pub struct QuerySet {
     pub headers: Vec<String>,

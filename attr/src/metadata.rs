@@ -220,7 +220,7 @@ impl quote::ToTokens for TType {
                 ty.to_tokens(tokens);
             }
             TType::Join(ty) => {
-                tokens.append_all(quote::quote! { ormlite::model::Join<#ty> });
+                tokens.append_all(quote::quote! { ormlitex::model::Join<#ty> });
             }
         }
     }
@@ -306,12 +306,12 @@ impl ModelMetadata {
     pub fn from_derive(ast: &DeriveInput) -> Result<Self, SyndecodeError> {
         let meta = TableMetadata::from_derive(ast)?;
         let pkey = meta.pkey.clone().expect(&format!(
-            "No column marked with #[ormlite(primary_key)], and no column named id, uuid, {0}_id, or {0}_uuid",
+            "No column marked with #[ormlitex(primary_key)], and no column named id, uuid, {0}_id, or {0}_uuid",
             meta.table_name,
         ));
         let pkey = meta.columns.iter().find(|&c| c.column_name == pkey).unwrap().clone();
         let mut insert_struct = None;
-        for attr in ast.attrs.iter().filter(|a| a.path().is_ident("ormlite")) {
+        for attr in ast.attrs.iter().filter(|a| a.path().is_ident("ormlitex")) {
             let args: ModelAttributes = attr.parse_args()
                 .map_err(|e| SyndecodeError(e.to_string()))?;
             if let Some(value) = args.insertable {
@@ -346,7 +346,7 @@ impl TableMetadata {
         let mut databases = vec![];
         let struct_name = Ident::from(&ast.ident);
         let mut table_name = None;
-        for attr in ast.attrs.iter().filter(|a| a.path().is_ident("ormlite")) {
+        for attr in ast.attrs.iter().filter(|a| a.path().is_ident("ormlitex")) {
             let args: ModelAttributes = attr.parse_args()
                 .map_err(|e| SyndecodeError(e.to_string()))?;
             if let Some(value) = args.table {
@@ -529,7 +529,7 @@ impl TryFrom<&Field> for ColumnMetadata {
             .rust_default(None)
         ;
         let mut has_join_directive = false;
-        for attr in f.attrs.iter().filter(|&a| a.path().is_ident("ormlite")) {
+        for attr in f.attrs.iter().filter(|&a| a.path().is_ident("ormlitex")) {
             let args: ColumnAttributes = attr.parse_args().unwrap();
             if args.primary_key.value() {
                 builder.marked_primary_key(true);
@@ -554,7 +554,7 @@ impl TryFrom<&Field> for ColumnMetadata {
                 has_join_directive = true;
             }
             if let Some(_path) = args.one_to_many_foreign_key {
-                panic!("Join support in ormlite is in alpha state, and one_to_many_foreign_key is unfortunately not implemented yet.");
+                panic!("Join support in ormlitex is in alpha state, and one_to_many_foreign_key is unfortunately not implemented yet.");
                 // builder.one_to_many_foreign_key(Some(ForeignKey::from(&path)));
                 // has_join_directive = true;
             }
@@ -611,7 +611,7 @@ mod test {
     #[test]
     fn test_decode_metadata() {
         let ast = syn::parse_str::<ItemStruct>(r#"struct User {
-            #[ormlite(column = "Id")]
+            #[ormlitex(column = "Id")]
             id: i32,
         }"#).unwrap();
         let input = DeriveInput::from(ast);

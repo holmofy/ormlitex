@@ -1,6 +1,6 @@
 #![allow(unused)]
 use uuid::Uuid;
-use ormlite::TableMeta;
+use ormlitex::TableMeta;
 use serde::Serialize;
 
 #[derive(TableMeta)]
@@ -13,7 +13,7 @@ pub struct Person {
 #[derive(TableMeta, Serialize)]
 pub struct Person2 {
     id: Uuid,
-    #[ormlite(column = "old")]
+    #[ormlitex(column = "old")]
     age: u8,
 }
 

@@ -1,10 +1,10 @@
 use proc_macro2::{Span, TokenStream};
 use quote::quote;
-use ormlite_attr::{ColumnMetadata, Ident, ModelMetadata, TableMetadata, TType};
-use crate::codegen::common::{generate_conditional_bind, insertion_binding, OrmliteCodegen};
+use ormlitex_attr::{ColumnMetadata, Ident, ModelMetadata, TableMetadata, TType};
+use crate::codegen::common::{generate_conditional_bind, insertion_binding, ormlitexCodegen};
 use crate::MetadataCache;
 
-pub fn impl_Model__insert(db: &dyn OrmliteCodegen, attr: &TableMetadata, metadata_cache: &MetadataCache) -> TokenStream {
+pub fn impl_Model__insert(db: &dyn ormlitexCodegen, attr: &TableMetadata, metadata_cache: &MetadataCache) -> TokenStream {
     let box_future = crate::util::box_fut_ts();
     let mut placeholder = db.placeholder();
     let db = db.database_ts();
@@ -24,21 +24,21 @@ pub fn impl_Model__insert(db: &dyn OrmliteCodegen, attr: &TableMetadata, metadat
     });
 
     quote! {
-        fn insert<'a, A>(mut self, conn: A) -> ::ormlite::__private::Insertion<'a, A, Self, #db>
+        fn insert<'a, A>(mut self, conn: A) -> ::ormlitex::__private::Insertion<'a, A, Self, #db>
             where
-                A: 'a + Send + ::ormlite::Acquire<'a, Database=#db>
+                A: 'a + Send + ::ormlitex::Acquire<'a, Database=#db>
         {
-            ::ormlite::__private::Insertion {
+            ::ormlitex::__private::Insertion {
                 acquire: conn,
                 model: self,
                 closure: Box::new(|conn, mut model, query| {
                     Box::pin(async move {
-                        use ::ormlite::__private::StreamExt;
+                        use ::ormlitex::__private::StreamExt;
                         let mut conn = conn.acquire().await?;
                         #(
                             #insert_join
                         )*
-                        let mut q = ::ormlite::query_as(&query);
+                        let mut q = ::ormlitex::query_as(&query);
                         #(
                             #query_bindings
                         )*
@@ -47,7 +47,7 @@ pub fn impl_Model__insert(db: &dyn OrmliteCodegen, attr: &TableMetadata, metadat
                         let mut model: Self = stream
                             .try_next()
                             .await?
-                            .ok_or_else(|| ::ormlite::Error::from(::ormlite::SqlxError::RowNotFound))?;
+                            .ok_or_else(|| ::ormlitex::Error::from(::ormlitex::SqlxError::RowNotFound))?;
                         stream.try_next().await?;
                         #(
                             #late_bind
@@ -55,10 +55,10 @@ pub fn impl_Model__insert(db: &dyn OrmliteCodegen, attr: &TableMetadata, metadat
                         Ok(model)
                     })
                 }),
-                insert: ::ormlite::__private::Insert::new(#table)
-                    .columns(<Self as ::ormlite::TableMeta>::table_columns())
+                insert: ::ormlitex::__private::Insert::new(#table)
+                    .columns(<Self as ::ormlitex::TableMeta>::table_columns())
                     .one_value(&[#(#params,)*])
-                    .returning(<Self as ::ormlite::TableMeta>::table_columns()),
+                    .returning(<Self as ::ormlitex::TableMeta>::table_columns()),
                 _db: ::std::marker::PhantomData,
             }
         }
@@ -66,7 +66,7 @@ pub fn impl_Model__insert(db: &dyn OrmliteCodegen, attr: &TableMetadata, metadat
 }
 
 
-pub fn impl_ModelBuilder__insert(db: &dyn OrmliteCodegen, attr: &TableMetadata) -> TokenStream {
+pub fn impl_ModelBuilder__insert(db: &dyn ormlitexCodegen, attr: &TableMetadata) -> TokenStream {
     let box_future = crate::util::box_fut_ts();
     let placeholder = db.placeholder_ts();
     let db = db.database_ts();
@@ -78,12 +78,12 @@ pub fn impl_ModelBuilder__insert(db: &dyn OrmliteCodegen, attr: &TableMetadata) 
     let bind_parameters = attr.database_columns().map(generate_conditional_bind);
 
     quote! {
-        fn insert<'e: 'a, E>(self, db: E) -> #box_future<'a, ::ormlite::Result<Self::Model>>
+        fn insert<'e: 'a, E>(self, db: E) -> #box_future<'a, ::ormlitex::Result<Self::Model>>
         where
-            E: 'e +::ormlite::Executor<'e, Database = #db>,
+            E: 'e +::ormlitex::Executor<'e, Database = #db>,
         {
             Box::pin(async move {
-                use ::ormlite::__private::StreamExt;
+                use ::ormlitex::__private::StreamExt;
                 let mut placeholder = #placeholder;
                 let set_fields = self.modified_fields();
                 let query = format!(
@@ -91,14 +91,14 @@ pub fn impl_ModelBuilder__insert(db: &dyn OrmliteCodegen, attr: &TableMetadata) 
                     set_fields.join(", "),
                     set_fields.iter().map(|_| placeholder.next().unwrap()).collect::<Vec<_>>().join(", "),
                 );
-                let mut q =::ormlite::query_as::<#db, Self::Model>(&query);
+                let mut q =::ormlitex::query_as::<#db, Self::Model>(&query);
                 #(#bind_parameters)*
                 // using fetch instead of fetch_one because of https://github.com/launchbadge/sqlx/issues/1370
                 let mut stream = q.fetch(db);
                 let model = stream
                     .try_next()
                     .await?
-                    .ok_or_else(|| ::ormlite::Error::from(::ormlite::SqlxError::RowNotFound))?;
+                    .ok_or_else(|| ::ormlitex::Error::from(::ormlitex::SqlxError::RowNotFound))?;
                 stream.try_next().await?;
                 Ok(model)
             })
@@ -106,7 +106,7 @@ pub fn impl_ModelBuilder__insert(db: &dyn OrmliteCodegen, attr: &TableMetadata) 
     }
 }
 
-pub fn impl_InsertModel(db: &dyn OrmliteCodegen, meta: &ModelMetadata) -> TokenStream {
+pub fn impl_InsertModel(db: &dyn ormlitexCodegen, meta: &ModelMetadata) -> TokenStream {
     let Some(insert_struct) = &meta.insert_struct else {
         return quote! {};
     };
@@ -152,17 +152,17 @@ pub fn impl_InsertModel(db: &dyn OrmliteCodegen, meta: &ModelMetadata) -> TokenS
     });
 
     quote! {
-        impl ::ormlite::model::Insertable<#db> for #insert_model {
+        impl ::ormlitex::model::Insertable<#db> for #insert_model {
             type Model = #model;
 
-            fn insert<'a, A>(self, db: A) -> #box_future<'a, ::ormlite::Result<Self::Model>>
+            fn insert<'a, A>(self, db: A) -> #box_future<'a, ::ormlitex::Result<Self::Model>>
             where
-                A: 'a + Send + ::ormlite::Acquire<'a, Database = #db>,
+                A: 'a + Send + ::ormlitex::Acquire<'a, Database = #db>,
             {
                 Box::pin(async move {
-                    use ::ormlite::__private::StreamExt;
+                    use ::ormlitex::__private::StreamExt;
                     let mut conn = db.acquire().await?;
-                    let mut q =::ormlite::query_as::<#db, Self::Model>(#query);
+                    let mut q =::ormlitex::query_as::<#db, Self::Model>(#query);
                     let mut model = self;
                     #(#insert_join)*
                     #(#query_bindings)*
@@ -170,7 +170,7 @@ pub fn impl_InsertModel(db: &dyn OrmliteCodegen, meta: &ModelMetadata) -> TokenS
                     let mut model = stream
                         .try_next()
                         .await?
-                        .ok_or_else(|| ::ormlite::Error::from(::ormlite::SqlxError::RowNotFound))?;
+                        .ok_or_else(|| ::ormlitex::Error::from(::ormlitex::SqlxError::RowNotFound))?;
                     stream.try_next().await?;
                     #(#late_bind)*
                     Ok(model)
@@ -210,10 +210,10 @@ pub fn insert_join(c: &ColumnMetadata) -> TokenStream {
         let #id = if let Some(modification) = model.#id._take_modification() {
             match modification
                     .insert(&mut *conn)
-                    .on_conflict(::ormlite::query_builder::OnConflict::Ignore)
+                    .on_conflict(::ormlitex::query_builder::OnConflict::Ignore)
                     .await {
                 Ok(model) => Join::_query_result(model),
-                Err(::ormlite::Error::SqlxError(::ormlite::SqlxError::RowNotFound)) => {
+                Err(::ormlitex::Error::SqlxError(::ormlitex::SqlxError::RowNotFound)) => {
                     let preexisting = #preexisting;
                     Join::_query_result(preexisting)
                 },

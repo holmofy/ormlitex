@@ -1,8 +1,8 @@
-use ormlite::Model;
-use ormlite::model::{Insertable, Join, JoinMeta};
+use ormlitex::Model;
+use ormlitex::model::{Insertable, Join, JoinMeta};
 use sqlmo::ToSql;
 
-use ormlite::Connection;
+use ormlitex::Connection;
 #[path = "../setup.rs"]
 mod setup;
 
@@ -13,29 +13,29 @@ pub struct Organization {
 }
 
 #[derive(Model)]
-#[ormlite(insertable = InsertUser)]
+#[ormlitex(insertable = InsertUser)]
 pub struct User {
     id: i32,
     name: String,
-    #[ormlite(default)]
+    #[ormlitex(default)]
     secret: Option<String>,
-    #[ormlite(default_value = "5")]
+    #[ormlitex(default_value = "5")]
     number: i32,
-    #[ormlite(column = "type")]
+    #[ormlitex(column = "type")]
     typ: i32,
-    #[ormlite(join_column = "org_id")]
+    #[ormlitex(join_column = "org_id")]
     organization: Join<Organization>,
 }
 
 #[tokio::main]
 async fn main() {
-    let mut db = ormlite::sqlite::SqliteConnection::connect(":memory:")
+    let mut db = ormlitex::sqlite::SqliteConnection::connect(":memory:")
         .await
         .unwrap();
     let migration = setup::migrate_self(&[file!()]);
     for s in migration.statements {
         let sql = s.to_sql(sqlmo::Dialect::Sqlite);
-        ormlite::query(&sql)
+        ormlitex::query(&sql)
             .execute(&mut db)
             .await
             .unwrap();

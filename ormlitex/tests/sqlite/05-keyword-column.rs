@@ -1,27 +1,27 @@
-use ormlite::Model;
-use ormlite::TableMeta;
+use ormlitex::Model;
+use ormlitex::TableMeta;
 use sqlmo::ToSql;
 
-use ormlite::Connection;
+use ormlitex::Connection;
 #[path = "../setup.rs"]
 mod setup;
 
 #[derive(Model)]
 pub struct User {
     id: i32,
-    #[ormlite(column = "type")]
+    #[ormlitex(column = "type")]
     typ: String,
 }
 
 #[tokio::main]
 async fn main() {
-    let mut db = ormlite::sqlite::SqliteConnection::connect(":memory:")
+    let mut db = ormlitex::sqlite::SqliteConnection::connect(":memory:")
         .await
         .unwrap();
     let migration = setup::migrate_self(&[file!()]);
     for s in migration.statements {
         let sql = s.to_sql(sqlmo::Dialect::Sqlite);
-        ormlite::query(&sql)
+        ormlitex::query(&sql)
             .execute(&mut db)
             .await
             .unwrap();

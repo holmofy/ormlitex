@@ -1,5 +1,5 @@
-use ormlite::types::Uuid;
-use ormlite::model::*;
+use ormlitex::types::Uuid;
+use ormlitex::model::*;
 
 #[derive(Debug, Model)]
 pub struct Organization {

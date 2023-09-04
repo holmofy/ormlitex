@@ -3,10 +3,10 @@ use std::fs::File;
 use std::time::Instant;
 use anyhow::Result;
 use clap::Parser;
-use ormlite::{Executor, Arguments, Acquire};
-use ormlite::postgres::PgArguments;
+use ormlitex::{Executor, Arguments, Acquire};
+use ormlitex::postgres::PgArguments;
 use crate::command::{get_executed_migrations, get_pending_migrations, MigrationType};
-use ormlite_core::config::{get_var_snapshot_folder, get_var_database_url, get_var_migration_folder};
+use ormlitex_core::config::{get_var_snapshot_folder, get_var_database_url, get_var_migration_folder};
 use crate::util::{CommandSuccess, create_connection, create_runtime};
 use sha2::{Digest, Sha384};
 
@@ -78,7 +78,7 @@ impl Up {
             args.add(&migration.description);
             args.add(checksum);
             args.add(elapsed.as_nanos() as i64);
-            let q = ormlite::query_with("INSERT INTO _sqlx_migrations (version, description, installed_on, success, checksum, execution_time) VALUES ($1, $2, NOW(), true, $3, $4)", args);
+            let q = ormlitex::query_with("INSERT INTO _sqlx_migrations (version, description, installed_on, success, checksum, execution_time) VALUES ($1, $2, NOW(), true, $3, $4)", args);
             runtime.block_on(q.execute(&mut *conn))?;
             eprintln!("{}: Executed migration", file_path.display());
         }

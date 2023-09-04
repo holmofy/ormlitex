@@ -1,13 +1,13 @@
 [package]
-name = "ormlite-attr"
+name = "ormlitex-attr"
 version = "0.17.1"
 edition = "2021"
-description = "See `ormlite`."
+description = "See `ormlitex`."
 authors = ["Kurt Wolf <kurtwolfbuilds@gmail.com>"]
 license = "MIT"
-repository = "https://github.com/kurtbuilds/ormlite"
-homepage = "https://github.com/kurtbuilds/ormlite"
-documentation = "https://docs.rs/ormlite"
+repository = "https://github.com/holmofy/ormlitex"
+homepage = "https://github.com/holmofy/ormlitex"
+documentation = "https://docs.rs/ormlitex"
 
 [lib]
 doctest = false

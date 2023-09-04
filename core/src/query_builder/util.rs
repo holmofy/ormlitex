@@ -32,7 +32,7 @@ pub fn replace_placeholders<T: Iterator<Item = String>>(
                     if let Some(next_tok) = next_tok {
                         match next_tok {
                             Token::Number(text, _) => {
-                                let n = text.parse::<usize>().map_err(|_| Error::OrmliteError(
+                                let n = text.parse::<usize>().map_err(|_| Error::ormlitexError(
                                     format!("Failed to parse number after a $ during query tokenization. Value was: {text}"
                                     )))?;
                                 buf.push_str(&format!("${next_tok}"));

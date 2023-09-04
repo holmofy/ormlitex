@@ -5,12 +5,12 @@ use std::path::Path;
 use anyhow::{Error, Result};
 use clap::Parser;
 
-use ormlite::postgres::PgArguments;
-use ormlite::{Acquire, Executor};
+use ormlitex::postgres::PgArguments;
+use ormlitex::{Acquire, Executor};
 use crate::command::{get_executed_migrations, get_pending_migrations, MigrationType};
-use ormlite_core::config::{get_var_snapshot_folder, get_var_database_url, get_var_migration_folder};
+use ormlitex_core::config::{get_var_snapshot_folder, get_var_database_url, get_var_migration_folder};
 use crate::util::{CommandSuccess, create_connection, create_runtime};
-use ormlite::Arguments;
+use ormlitex::Arguments;
 use url::Url;
 
 #[derive(Parser, Debug)]
@@ -133,7 +133,7 @@ impl Down {
                     runtime.block_on(conn.execute(&*body))?;
                     let mut args = PgArguments::default();
                     args.add(migration.version);
-                    let q = ormlite::query_with("DELETE FROM _sqlx_migrations WHERE version = $1", args);
+                    let q = ormlitex::query_with("DELETE FROM _sqlx_migrations WHERE version = $1", args);
                     runtime.block_on(q.execute(conn))?;
                 }
             }

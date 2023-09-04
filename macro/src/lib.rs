@@ -1,20 +1,20 @@
 #![allow(unused)]
 #![allow(non_snake_case)]
 
-use ormlite_attr::{ColumnAttributes, ColumnMetadata, TableMetadata, TableMetadataBuilder, ColumnMetadataBuilder, ModelAttributes, SyndecodeError, schema_from_filepaths, LoadOptions, ModelMetadata};
-use ormlite_core::config::get_var_model_folders;
-use crate::codegen::common::OrmliteCodegen;
+use ormlitex_attr::{ColumnAttributes, ColumnMetadata, TableMetadata, TableMetadataBuilder, ColumnMetadataBuilder, ModelAttributes, SyndecodeError, schema_from_filepaths, LoadOptions, ModelMetadata};
+use ormlitex_core::config::get_var_model_folders;
+use crate::codegen::common::ormlitexCodegen;
 use proc_macro::TokenStream;
 use std::borrow::Borrow;
 
 use quote::quote;
 use lazy_static::lazy_static;
 use syn::{Data, DeriveInput, Item, ItemStruct, parse_macro_input};
-use ormlite_attr::DeriveInputExt;
+use ormlitex_attr::DeriveInputExt;
 use std::collections::HashMap;
 use std::ops::Deref;
 use once_cell::sync::OnceCell;
-use ormlite_core::Error::OrmliteError;
+use ormlitex_core::Error::ormlitexError;
 use codegen::into_arguments::impl_IntoArguments;
 use crate::codegen::from_row::{impl_from_row_using_aliases, impl_FromRow};
 use crate::codegen::insert::impl_InsertModel;
@@ -48,8 +48,8 @@ fn load_metadata_cache() -> MetadataCache {
 }
 
 /// For a given struct, determine what codegen to use.
-fn get_databases(table_meta: &TableMetadata) -> Vec<Box<dyn OrmliteCodegen>> {
-    let mut databases: Vec<Box<dyn OrmliteCodegen>> = Vec::new();
+fn get_databases(table_meta: &TableMetadata) -> Vec<Box<dyn ormlitexCodegen>> {
+    let mut databases: Vec<Box<dyn ormlitexCodegen>> = Vec::new();
     let dbs = table_meta.databases.clone();
     if dbs.is_empty() {
         #[cfg(feature = "default-sqlite")]
@@ -88,8 +88,8 @@ fn get_databases(table_meta: &TableMetadata) -> Vec<Box<dyn OrmliteCodegen>> {
         }
         if count > 1 {
             panic!("You have more than one database configured using features, but no database is specified for this model. \
-            Specify a database for the model like this:\n\n#[ormlite(database = \"<db>\")]\n\nOr you can enable \
-            a default database feature:\n\n # Cargo.toml\normlite = {{ features = [\"default-<db>\"] }}");
+            Specify a database for the model like this:\n\n#[ormlitex(database = \"<db>\")]\n\nOr you can enable \
+            a default database feature:\n\n # Cargo.toml\normlitex = {{ features = [\"default-<db>\"] }}");
         }
     }
     if databases.is_empty() {
@@ -105,8 +105,8 @@ fn get_databases(table_meta: &TableMetadata) -> Vec<Box<dyn OrmliteCodegen>> {
 
 /// Derive macro for `#[derive(Model)]` It additionally generates FromRow for the struct, since
 /// Model requires FromRow.
-#[proc_macro_derive(Model, attributes(ormlite))]
-pub fn expand_ormlite_model(input: TokenStream) -> TokenStream {
+#[proc_macro_derive(Model, attributes(ormlitex))]
+pub fn expand_ormlitex_model(input: TokenStream) -> TokenStream {
     let ast = parse_macro_input!(input as DeriveInput);
     let Data::Struct(data) = &ast.data else { panic!("Only structs can derive Model"); };
 
@@ -164,7 +164,7 @@ pub fn expand_ormlite_model(input: TokenStream) -> TokenStream {
     })
 }
 
-#[proc_macro_derive(FromRow, attributes(ormlite))]
+#[proc_macro_derive(FromRow, attributes(ormlitex))]
 pub fn expand_derive_fromrow(input: TokenStream) -> TokenStream {
     let ast = parse_macro_input!(input as DeriveInput);
     let Data::Struct(data) = &ast.data else { panic!("Only structs can derive Model"); };
@@ -188,7 +188,7 @@ pub fn expand_derive_fromrow(input: TokenStream) -> TokenStream {
     })
 }
 
-#[proc_macro_derive(TableMeta, attributes(ormlite))]
+#[proc_macro_derive(TableMeta, attributes(ormlitex))]
 pub fn expand_derive_table_meta(input: TokenStream) -> TokenStream {
     let ast = parse_macro_input!(input as DeriveInput);
     let Data::Struct(data) = &ast.data else { panic!("Only structs can derive Model"); };
@@ -201,7 +201,7 @@ pub fn expand_derive_table_meta(input: TokenStream) -> TokenStream {
     TokenStream::from(impl_TableMeta)
 }
 
-#[proc_macro_derive(IntoArguments, attributes(ormlite))]
+#[proc_macro_derive(IntoArguments, attributes(ormlitex))]
 pub fn expand_derive_into_arguments(input: TokenStream) -> TokenStream {
     let ast = parse_macro_input!(input as DeriveInput);
     let Data::Struct(data) = &ast.data else { panic!("Only structs can derive Model"); };

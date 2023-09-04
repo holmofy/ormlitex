@@ -1,27 +1,27 @@
-use ormlite::model::*;
-use ormlite::Connection;
+use ormlitex::model::*;
+use ormlitex::Connection;
 use uuid::Uuid;
 
 #[derive(Model, Clone)]
 pub struct Organization {
     id: i32,
     name: String,
-    #[ormlite(skip)]
+    #[ormlitex(skip)]
     extension: Option<String>,
 }
 
 #[derive(Model)]
-#[ormlite(insertable = InsertUser)]
+#[ormlitex(insertable = InsertUser)]
 pub struct User {
     id: i32,
     name: String,
-    #[ormlite(default)]
+    #[ormlitex(default)]
     secret: Option<String>,
-    #[ormlite(default_value = "5")]
+    #[ormlitex(default_value = "5")]
     number: i32,
-    #[ormlite(column = "type")]
+    #[ormlitex(column = "type")]
     typ: i32,
-    #[ormlite(join_column = "org_id")]
+    #[ormlitex(join_column = "org_id")]
     organization: Join<Organization>,
 }
 
@@ -46,11 +46,11 @@ id INTEGER PRIMARY KEY
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     env_logger::init();
-    let mut db = ormlite::sqlite::SqliteConnection::connect(":memory:").await.unwrap();
-    ormlite::query(CREATE_PERSON_SQL)
+    let mut db = ormlitex::sqlite::SqliteConnection::connect(":memory:").await.unwrap();
+    ormlitex::query(CREATE_PERSON_SQL)
         .execute(&mut db)
         .await?;
-    ormlite::query(CREATE_ORG_SQL)
+    ormlitex::query(CREATE_ORG_SQL)
         .execute(&mut db)
         .await?;
 

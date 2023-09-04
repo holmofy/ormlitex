@@ -1,13 +1,13 @@
 use std::borrow::Cow;
 use std::collections::HashMap;
-use ormlite_core::query_builder::Placeholder;
+use ormlitex_core::query_builder::Placeholder;
 use proc_macro2::{Span, TokenStream};
 use quote::{quote, ToTokens};
 use syn::punctuated::Punctuated;
 use syn::token::{Comma, Token};
 use syn::{DeriveInput, Field};
 use syn::spanned::Spanned;
-use ormlite_attr::{ColumnMetadata, DeriveInputExt, FieldExt, Ident, InnerType, ModelMetadata, TableMetadata, TType};
+use ormlitex_attr::{ColumnMetadata, DeriveInputExt, FieldExt, Ident, InnerType, ModelMetadata, TableMetadata, TType};
 use crate::MetadataCache;
 use itertools::Itertools;
 use sqlx::Column;
@@ -88,8 +88,8 @@ pub fn from_row_bounds<'a>(attr: &'a TableMetadata, cache: &'a MetadataCache) ->
         .into_iter()
         .map(|ty| {
             quote! {
-                #ty: ::ormlite::decode::Decode<'a, R::Database>,
-                #ty: ::ormlite::types::Type<R::Database>,
+                #ty: ::ormlitex::decode::Decode<'a, R::Database>,
+                #ty: ::ormlitex::types::Type<R::Database>,
             }
         })
 }
@@ -118,7 +118,7 @@ pub fn insertion_binding(c: &ColumnMetadata) -> TokenStream {
     }
 }
 
-pub trait OrmliteCodegen {
+pub trait ormlitexCodegen {
     fn database_ts(&self) -> TokenStream;
     fn placeholder_ts(&self) -> TokenStream;
     // A placeholder that works at the phase when its invoked (e.g. during comp time, it can be used.
@@ -130,7 +130,7 @@ pub trait OrmliteCodegen {
 #[cfg(test)]
 mod test {
     use super::*;
-    use ormlite_attr::*;
+    use ormlitex_attr::*;
 
     #[test]
     fn test_all_bounds() {
@@ -162,14 +162,14 @@ mod test {
         };
         assert_eq!(
             bounds.to_string(),
-            "u32 : :: ormlite :: decode :: Decode < 'a , R :: Database > , ".to_owned() +
-                "u32 : :: ormlite :: types :: Type < R :: Database > , " +
+            "u32 : :: ormlitex :: decode :: Decode < 'a , R :: Database > , ".to_owned() +
+                "u32 : :: ormlitex :: types :: Type < R :: Database > , " +
 
-                "String : :: ormlite :: decode :: Decode < 'a , R :: Database > , " +
-                "String : :: ormlite :: types :: Type < R :: Database > , " +
+                "String : :: ormlitex :: decode :: Decode < 'a , R :: Database > , " +
+                "String : :: ormlitex :: types :: Type < R :: Database > , " +
 
-                "bool : :: ormlite :: decode :: Decode < 'a , R :: Database > , " +
-                "bool : :: ormlite :: types :: Type < R :: Database > ,"
+                "bool : :: ormlitex :: decode :: Decode < 'a , R :: Database > , " +
+                "bool : :: ormlitex :: types :: Type < R :: Database > ,"
         );
     }
 }

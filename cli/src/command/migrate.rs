@@ -11,12 +11,12 @@ use time::macros::format_description;
 use time::OffsetDateTime as DateTime;
 use tokio::runtime::Runtime;
 
-use ormlite::Row;
-use ormlite::Acquire;
-use ormlite::postgres::PgConnection;
-use ormlite_core::config;
-use ormlite_core::config::get_var_model_folders;
-use ormlite_core::schema::TryFromOrmlite;
+use ormlitex::Row;
+use ormlitex::Acquire;
+use ormlitex::postgres::PgConnection;
+use ormlitex_core::config;
+use ormlitex_core::config::get_var_model_folders;
+use ormlitex_core::schema::TryFromormlitex;
 
 use crate::util::{create_connection, create_runtime};
 
@@ -28,7 +28,7 @@ FROM _sqlx_migrations
 ORDER BY version ASC
 ";
 
-// Not using FromRow because ormlite requires MODEL_FOLDERS to be set when compiling macros,
+// Not using FromRow because ormlitex requires MODEL_FOLDERS to be set when compiling macros,
 // and it's not set if we're compiling the CLI.
 /// Compare migrations using version (see PartialEq).
 #[derive(PartialEq, Eq, PartialOrd, Ord, Debug)]
@@ -106,9 +106,9 @@ fn create_migration(folder: &Path, file_name: String, migration: MigrationType, 
 
 /// Migrations are sorted asc. Last is most recent.
 pub fn get_executed_migrations(runtime: &Runtime, conn: &mut PgConnection) -> Result<Vec<MigrationMetadata>> {
-    let migrations = runtime.block_on(ormlite::query(GET_MIGRATIONS_QUERY)
+    let migrations = runtime.block_on(ormlitex::query(GET_MIGRATIONS_QUERY)
         .fetch_all(conn))?;
-    let migrations = migrations.into_iter().map(|m: ormlite::postgres::PgRow| {
+    let migrations = migrations.into_iter().map(|m: ormlitex::postgres::PgRow| {
         let name: String = m.get("name");
         let version: i64 = m.get("version");
         let description: String = m.get("description");
@@ -148,7 +148,7 @@ fn check_for_pending_migrations(folder: &Path, runtime: &Runtime, conn: &mut PgC
     let pending = get_pending_migrations(folder)?;
 
     if executed.len() < pending.len() {
-        return Err(anyhow!("Pending migrations are not in sync with the database. Please run `ormlite up` first."));
+        return Err(anyhow!("Pending migrations are not in sync with the database. Please run `ormlitex up` first."));
     }
     for (executed, pending) in executed.iter().zip(pending.iter()) {
         if executed != pending {
@@ -192,7 +192,7 @@ fn autogenerate_migration(codebase_path: &[&Path], runtime: &Runtime, conn: &mut
     let mut current = runtime.block_on(Schema::try_from_postgres(conn, "public"))?;
     current.tables.retain(|t| t.name != "_sqlx_migrations");
 
-    let mut desired = Schema::try_from_ormlite_project(codebase_path)?;
+    let mut desired = Schema::try_from_ormlitex_project(codebase_path)?;
     experimental_modifications_to_schema(&mut desired)?;
 
     let migration = current.migrate_to(desired, &sqlmo::MigrationOptions {

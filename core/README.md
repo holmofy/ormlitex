@@ -1,1 +1,1 @@
-Please see [`ormlite`](https://crates.io/crates/ormlite).
+Please see [`ormlitex`](https://crates.io/crates/ormlitex).

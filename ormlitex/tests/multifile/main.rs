@@ -7,9 +7,9 @@ mod organization;
 pub use user::User;
 pub use organization::Organization;
 use uuid::Uuid;
-use ormlite::model::*;
-use ormlite::sqlite::SqliteConnection;
-use ormlite::Connection;
+use ormlitex::model::*;
+use ormlitex::sqlite::SqliteConnection;
+use ormlitex::Connection;
 use sqlmo::ToSql;
 
 #[tokio::main]
@@ -20,7 +20,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     ]);
     for s in migration.statements {
         let sql = s.to_sql(sqlmo::Dialect::Sqlite);
-        ormlite::query(&sql)
+        ormlitex::query(&sql)
             .execute(&mut conn)
             .await?;
     }

@@ -5,7 +5,7 @@ use syn::Data::Struct;
 use syn::{DataStruct, DeriveInput, Field, Fields, FieldsNamed};
 
 pub fn box_fut_ts() -> TokenStream {
-    quote!(::ormlite::BoxFuture)
+    quote!(::ormlitex::BoxFuture)
 }
 
 

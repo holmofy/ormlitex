@@ -1,8 +1,8 @@
 use proc_macro2::TokenStream;
 use quote::quote;
 use syn::DeriveInput;
-use ormlite_attr::{Ident, ModelMetadata, TableMetadata};
-use crate::codegen::common::{insertion_binding, OrmliteCodegen};
+use ormlitex_attr::{Ident, ModelMetadata, TableMetadata};
+use crate::codegen::common::{insertion_binding, ormlitexCodegen};
 use crate::codegen::insert::impl_ModelBuilder__insert;
 use crate::codegen::update::impl_ModelBuilder__update;
 use crate::MetadataCache;
@@ -114,7 +114,7 @@ pub fn impl_ModelBuilder__build(attr: &TableMetadata) -> TokenStream {
 }
 
 
-pub fn impl_ModelBuilder(db: &dyn OrmliteCodegen, attr: &ModelMetadata) -> TokenStream {
+pub fn impl_ModelBuilder(db: &dyn ormlitexCodegen, attr: &ModelMetadata) -> TokenStream {
     let partial_model = attr.builder_struct();
     let model = &attr.struct_name();
 
@@ -124,7 +124,7 @@ pub fn impl_ModelBuilder(db: &dyn OrmliteCodegen, attr: &ModelMetadata) -> Token
 
     let db = db.database_ts();
     quote! {
-        impl<'a> ::ormlite::model::ModelBuilder<'a, #db> for #partial_model<'a> {
+        impl<'a> ::ormlitex::model::ModelBuilder<'a, #db> for #partial_model<'a> {
             type Model = #model;
             #impl_ModelBuilder__insert
             #impl_ModelBuilder__update

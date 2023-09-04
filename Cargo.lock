@@ -1243,13 +1243,13 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dd8b5dd2ae5ed71462c540258bedcb51965123ad7e7ccf4b9a8cafaa4a63576d"
 
 [[package]]
-name = "ormlite"
+name = "ormlitex"
 version = "0.17.1"
 dependencies = [
  "chrono",
  "env_logger",
- "ormlite-core",
- "ormlite-macro",
+ "ormlitex-core",
+ "ormlitex-macro",
  "serde",
  "sqlmo",
  "sqlx",
@@ -1261,7 +1261,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "ormlite-attr"
+name = "ormlitex-attr"
 version = "0.17.1"
 dependencies = [
  "anyhow",
@@ -1277,16 +1277,16 @@ dependencies = [
 ]
 
 [[package]]
-name = "ormlite-cli"
+name = "ormlitex-cli"
 version = "0.17.1"
 dependencies = [
  "anyhow",
  "assert_matches",
  "clap",
  "colored",
- "ormlite",
- "ormlite-attr",
- "ormlite-core",
+ "ormlitex",
+ "ormlitex-attr",
+ "ormlitex-core",
  "proc-macro2",
  "regex",
  "sha2",
@@ -1301,14 +1301,14 @@ dependencies = [
 ]
 
 [[package]]
-name = "ormlite-core"
+name = "ormlitex-core"
 version = "0.17.1"
 dependencies = [
  "anyhow",
  "assert_matches",
  "async-trait",
  "futures",
- "ormlite-attr",
+ "ormlitex-attr",
  "serde",
  "sqlmo",
  "sqlparser",
@@ -1320,14 +1320,14 @@ dependencies = [
 ]
 
 [[package]]
-name = "ormlite-macro"
+name = "ormlitex-macro"
 version = "0.17.1"
 dependencies = [
  "itertools 0.11.0",
  "lazy_static",
  "once_cell",
- "ormlite-attr",
- "ormlite-core",
+ "ormlitex-attr",
+ "ormlitex-core",
  "proc-macro2",
  "quote",
  "sqlx",

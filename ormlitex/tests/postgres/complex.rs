@@ -1,6 +1,6 @@
 use chrono::{DateTime, Utc};
-use ormlite::model::*;
-use ormlite::types::Json;
+use ormlitex::model::*;
+use ormlitex::types::Json;
 use uuid::Uuid;
 use serde::{Serialize, Deserialize};
 
@@ -26,7 +26,7 @@ struct Job {
     name: String,
     data: Json<JobData>,
     #[allow(dead_code)]
-    #[ormlite(skip)]
+    #[ormlitex(skip)]
     skipped: Option<Uuid>,
 }
 
@@ -35,7 +35,7 @@ struct ApiJob {
     id: i32,
     typ: JobType,
     name: String,
-    #[ormlite(experimental_encode_as_json)]
+    #[ormlitex(experimental_encode_as_json)]
     data: JobData,
 }
 

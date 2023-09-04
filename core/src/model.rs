@@ -1,10 +1,10 @@
 /// A model is a struct that represents a row in a relational database table.
-/// Using the `[derive(ormlite::Model)]` macro, it will acquire the following traits:
+/// Using the `[derive(ormlitex::Model)]` macro, it will acquire the following traits:
 ///
-///  - `ormlite::Model`, giving it direct database access, e.g. `insert`, `update_all_fields`, etc.
-///  - `ormlite::HasModelBuilder`, letting it build partials, so you can insert or update some
+///  - `ormlitex::Model`, giving it direct database access, e.g. `insert`, `update_all_fields`, etc.
+///  - `ormlitex::HasModelBuilder`, letting it build partials, so you can insert or update some
 ///    fields instead of all of them at once, e.g. `model.name("John").update()`
-///  - `ormlite::TableMeta`, which you typically don't use directly, but provides table metadata
+///  - `ormlitex::TableMeta`, which you typically don't use directly, but provides table metadata
 ///    (e.g. table name)
 ///
 use crate::Result;
@@ -13,7 +13,7 @@ use futures::future::BoxFuture;
 
 /// A struct that is `Insertable` is expected to have same fields as the model, excluding fields
 /// that have sane defaults at the database level. Concretely, if you have a Person struct:
-/// #[derive(ormlite::Model)]
+/// #[derive(ormlitex::Model)]
 /// struct Person {
 ///     id: i32,
 ///     name: String,
